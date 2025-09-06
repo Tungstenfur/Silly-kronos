@@ -4,7 +4,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+import sqlite3
 
+db= sqlite3.connect('main.db')
+cursor = db.cursor()
 intents = discord.Intents.default()
 intents.message_content = True
 load_dotenv()
@@ -28,7 +31,7 @@ async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Boop :3")
 
 @app_commands.default_permissions(administrator=True)
-@bot.tree.command(name="schedule", description="Schedule an event :3")
+@bot.tree.command(name="schedule", description="Schedule an event :3 (uses UNIX time)")
 async def schedule(
     interaction: discord.Interaction,
     event: Literal["Raid", "Patrol", "Gamenight", "Special"],
@@ -44,7 +47,7 @@ async def schedule(
     elif event == "Special": color = discord.Color.Red()
     else: event = "Unknown"
     embed = discord.Embed(
-        title=f"Scheduled new event (uses UNIX time)",
+        title=f"Scheduled new event",
         description="Event type: " + event + "\n Host: " + host.mention + "\n Time: " + "<t:"+str(time)+">" + "\n Description: " + description,
         color=discord.Color.blue()
     )
@@ -53,4 +56,17 @@ async def schedule(
         f"Scheduled {event} at {time} with host {host.name}."
     )
 
+@app_commands.default_permissions(administrator=True)
+@bot.tree.command(name="addpoints", description="Add points to a user")
+async def addpoints(
+    interaction: discord.Interaction,
+    user: discord.User,
+    points: int
+):
+    cursor.execute('INSERT OR IGNORE INTO points (user_id, points) VALUES (?, ?)', (user.id, 0))
+    cursor.execute('UPDATE points SET points = points + ? WHERE user_id = ?', (points, user.id))
+    db.commit()
+    cursor.execute('SELECT points FROM points WHERE user_id = ?', (user.id,))
+    total_points = cursor.fetchone()[0]
+    await interaction.response.send_message(f"Added {points} points to {user.name}. Total points: {total_points}")
 bot.run(os.getenv("DISCORD_TOKEN"))

@@ -70,3 +70,9 @@ async def addpoints(
     total_points = cursor.fetchone()[0]
     await interaction.response.send_message(f"Added {points} points to {user.name}. Total points: {total_points}")
 bot.run(os.getenv("DISCORD_TOKEN"))
+@bot.tree.command(name="mypoints", description="Check your points")
+async def mypoints(interaction: discord.Interaction):
+    cursor.execute('INSERT OR IGNORE INTO points (user_id, points) VALUES (?, ?)', (interaction.user.id, 0))
+    cursor.execute('SELECT points FROM points WHERE user_id = ?', (interaction.user.id,))
+    total_points = cursor.fetchone()[0]
+    await interaction.response.send_message(f"You have {total_points} points.")

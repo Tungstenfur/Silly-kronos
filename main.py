@@ -77,4 +77,8 @@ async def mypoints(interaction: discord.Interaction):
     total_points = cursor.fetchone()[0]
     await interaction.response.send_message(f"You have {total_points} points.")
 
+@bot.tree.command(name="moth")
+async def moth(interaction: discord.Interaction):
+    await interaction.response.send_message(file=discord.File('moth.png'))
+
 bot.run(os.getenv("DISCORD_TOKEN"))

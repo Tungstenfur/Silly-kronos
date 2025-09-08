@@ -44,7 +44,7 @@ async def schedule(
     if event == "Raid": color = discord.Color.blue()
     elif event == "Patrol": color = discord.Color.green()
     elif event == "Gamenight": color = discord.Color.dark_blue()
-    elif event == "Special": color = discord.Color.Red()
+    elif event == "Special": color = discord.Color.red()
     else: event = "Unknown"
     embed = discord.Embed(
         title=f"Scheduled new event",

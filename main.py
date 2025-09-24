@@ -158,6 +158,6 @@ async def moth(interaction: discord.Interaction):
         await interaction.response.send_message("No moth images found.")
         return
     moth_image = random.choice(moths)
-    await interaction.response.send_message(file=discord.File(moth_image))
+    await interaction.response.send_message(file=discord.File('moths/'+moth_image))
 
 bot.run(os.getenv("DISCORD_TOKEN"))

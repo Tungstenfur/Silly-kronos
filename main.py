@@ -6,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import pandas as pd
 import sqlite3
+import random
 
 db= sqlite3.connect('main.db')
 cursor = db.cursor()
@@ -152,6 +153,11 @@ async def exporttable(interaction: discord.Interaction):
 
 @bot.tree.command(name="moth")
 async def moth(interaction: discord.Interaction):
-    await interaction.response.send_message(file=discord.File('moth.png'))
+    moths = os.listdir('moths')
+    if not moths:
+        await interaction.response.send_message("No moth images found.")
+        return
+    moth_image = random.choice(moths)
+    await interaction.response.send_message(file=discord.File(moth_image))
 
 bot.run(os.getenv("DISCORD_TOKEN"))
